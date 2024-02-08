@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+import { Route, Routes } from "react-router-dom"
+import Home from "./page/Home"
+import { UserContext } from './context/UserContext';
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import { UserContext } from "./context/UserContext";
@@ -12,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
       </Routes>
     </UserContext.Provider>
+  )
   );
 }
 
