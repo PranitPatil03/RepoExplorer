@@ -1,96 +1,44 @@
-import { Key, useState } from "react";
+import { Key, useContext, useEffect, useState } from "react";
+import { UserContext } from "../context/UserContext";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Repositories = () => {
-  const repo = ["javascript", "angular", "react", "typescript"];
+  const { userData, setUserData } = useContext(UserContext);
+  const [repos, setRepos] = useState([]);
 
-  const [repos, setRepos] = useState(repo);
+  const fetchRepos = async () => {
+    try {
+      const response = await axios.get(userData?.repos_url);
+      console.log(response.data);
+      setRepos(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  console.log(repos);
+
+  useEffect(() => {
+    fetchRepos();
+  }, [userData]);
 
   return (
-    <>
-      <div className="flex w-full gap-5 items-center justify-center">
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
+    <div className="flex flex-wrap justify-center">
+      {repos.map((repo, i) => (
+        <div
+          key={i}
+          className="flex flex-col items-start justify-start my-10 border w-1/5 mx-7 p-7"
+        >
+          <h2 className="text-4xl font-mono font-bold">{repo?.name}</h2>
+          <p className="text-xl font-mono font-semibold">{repo?.description}</p>
+          <Link
+            to={`${repo?.html_url}`}
+            className="text-xl font-mono font-semibold mt-4"
+          >Link</Link>
         </div>
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="flex w-full gap-5 items-center justify-center">
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-start my-10 border w-5/12 mx-7 p-7">
-          <h2 className="text-4xl font-mono font-bold">Repo Name 1</h2>
-          <p className="text-xl font-mono font-semibold">description 2</p>
-          <div className="flex gap-3">
-            {repos.map((repo: string, i: Key | null | undefined) => {
-              return (
-                <div className="" key={i}>
-                  <p className="text-base font-mono font-bold">{repo}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </>
+      ))}
+    </div>
   );
 };
-
 export default Repositories;

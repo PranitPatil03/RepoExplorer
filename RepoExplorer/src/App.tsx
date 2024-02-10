@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes } from "react-router-dom"
-import Home from "./page/Home"
-import { UserContext } from './context/UserContext';
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import { UserContext } from "./context/UserContext";
-import { useState } from "react";
 
 function App() {
   const [userData, setUserData] = useState({});
@@ -16,7 +12,6 @@ function App() {
         <Route path="/" element={<Home />} />
       </Routes>
     </UserContext.Provider>
-  )
   );
 }
 

@@ -1,62 +1,22 @@
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 
 const SearchBar = () => {
-  const { userData, setUserData } = useContext(UserContext);
+  const { setUserData } = useContext(UserContext);
 
-  const [inputData, setInputData] = useState('');
-
-  const [debouncedValue, setDebouncedValue] = useState(inputData);
-
-  const fetchRepoData = async () => {
-    if (inputData) {
-      const data = await axios.get(`https://api.github.com/users/${inputData}`);
-      const githubData = data.data;
-      setUserData(githubData);
-    }
-  };
-
-  const handleChangeUserName = (e) => {
-    setInputData(e.target.value);
-  };
-
-  useEffect(() => {
-
-    const timer = setTimeout(() => setDebouncedValue(inputData), 2000)
-
-    return () => clearTimeout(timer)
-  }, [inputData, 2000]);
-
-
-  useEffect(() => {
-
-    const controller = new AbortController();
-
-    if (debouncedValue) {
-      fetchRepoData()
-        .then(({ data }: any) => {
-          console.log(data)
-          setUserData(data)
-        })
-    }
-
-    return () => controller.abort();
-
-  }, [debouncedValue])
-=======
-import axios from "axios";
-import { UserContext } from "../context/UserContext";
-import { useContext, useEffect, useState } from "react";
-
-const SearchBar = () => {
-  const [searchInput, setSearchInput] = useState("pranitpatil03");
-
-  const { userData, setUserData } = useContext(UserContext);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
 
   const fetchData = async () => {
-    const data = await axios.get(`https://api.github.com/users/${searchInput}`);
-    setUserData(data.data);
+    if (debouncedValue) {
+      try {
+        const response = await axios.get(`https://api.github.com/users/${debouncedValue}`);
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -64,30 +24,30 @@ const SearchBar = () => {
   };
 
   useEffect(() => {
-    fetchData();
-    console.log(userData);
+    const timer = setTimeout(() => setDebouncedValue(searchInput), 2000);
+    return () => clearTimeout(timer);
   }, [searchInput]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchData();
+
+    return () => controller.abort();
+  }, [debouncedValue, setUserData]);
+
   return (
-    <>
-      <div className="flex items-center justify-center w-full relative">
-        <input
-          value={inputData}
-          type="text"
-          name="search"
-          placeholder="Search by GitHub username"
-          className="my-6 py-3 px-12 outline-none rounded-xl border border-gray-300 w-11/12"
-          onChange={handleChangeUserName}
-          value={searchInput}
-          type="text"
-          name="search"
-          onChange={handleChange}
-          placeholder="Search by github username"
-          className="my-6 py-3 px-12 outline-none rounded-xl border border-gray-300	w-11/12"
-        />
-        <i className="fi fi-rr-search absolute w-5 h-5 text-base left-24 top-1/2 -translate-y-1/2 md:pointer-events-none"></i>
-      </div>
-    </>
+    <div className="flex items-center justify-center w-full relative">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search by GitHub username"
+        className="my-6 py-3 px-12 outline-none rounded-xl border border-gray-300 w-11/12"
+        value={searchInput}
+        onChange={handleChange}
+      />
+      <i className="fi fi-rr-search absolute w-5 h-5 text-base left-24 top-1/2 -translate-y-1/2 md:pointer-events-none"></i>
+    </div>
   );
 };
 
